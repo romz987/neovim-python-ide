@@ -6,6 +6,8 @@ local servers = {
   ruff = {},
   -- markdown
   marksman = {},
+  -- toml 
+  taplo = {},
 
   pyright = {
     settings = {
@@ -20,14 +22,7 @@ local servers = {
           -- Режим диагностики - openFilesOnly / workspace - анализируются только открытые файлы / анализируются все файлы в проекте (выявлять ошибки даже в неоткрытых файлах) 
           -- Можно увидеть проблемы всего workspace с помощью :Telescope diagnostics
           -- Если включить Ruff и отключить здесь диагностику, то можно смотреть, что говорит Ruff в :Telescope diagnostics
-          diagnosticMode = "off",
-
-          diagnosticSeverityOverrides = {
-            -- лишний импорт это ошибка ( error / warning / information / none )
-            reportUnusedImport = "error",
-            -- импорт библиотеки которой нет это ошибка
-            reportMissingImports = "error",
-          }
+          diagnosticMode = "workspace",
         },
       },
     },

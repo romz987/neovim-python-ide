@@ -1,0 +1,62 @@
+[tool.pyright]
+# Версия Python, используемая в проекте (влияет на парсер и проверки) и платформа
+pythonVersion = "3.12"
+pythonPlatform = "Linux"
+
+# Список папок/файлов, которые Pyright будет анализировать (в данном случае только папка src)
+# Если не указать, то pyright будет анализировать все файлы
+# include = ["src"]
+
+# Стандартный список исключений — папки и файлы, которые Pyright не будет анализировать
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+    "**/node_modules",
+    "**/__pycache__",
+]
+
+# Игнорировать конкретную папку/файлы (например, старый код)
+# ignore = ["oldcode"]
+
+# Недостающие модули это ошибка 
+reportMissingImports = "error"
+# Лишний импорт это ошибка
+reportUnusedImport = "error"
+# Неиспользумеая переменная это ошибка 
+reportUnusedVariable = "error"
+# "Недостижимый код" (никогда не будет выполнен в процессе выполнения программы) это ошибка
+reportUnreachable = "warning"
+
+# Не выдавать предупреждения об отсутствующих типовых заглушках (.pyi)
+reportMissingTypeStubs = false
+
+
+# Определяем константу DEBUG в процессе анализа (Всегда будет true)
+# defineConstant = { DEBUG = true }
+
+# Путь к папке с stub-файлами (.pyi) — служебные типовые заглушки
+# stubPath = "src/stubs"

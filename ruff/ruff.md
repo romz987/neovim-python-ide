@@ -139,8 +139,15 @@ $ ruff linter
     PERF	  perflint	           Предупреждения о неэффективном коде
 
 ### Итоговая рекомендация для общего Python-проекта  
+**base**
+```toml
+select = [
+    "E", "F", "D", "Q", "COM"
+]
+```
 
-```config
+**recommended**
+```toml
 select = [ 
     "F", "E", "W", "C90", "I", 
     "B", "UP", "SIM", "RUF", "ERA", 
