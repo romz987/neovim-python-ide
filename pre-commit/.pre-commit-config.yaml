@@ -1,0 +1,23 @@
+repos:
+    # Используем локальные хуки, а не из GitHub
+  - repo: local
+    hooks:
+        # Уникальный ID хука
+      - id: ruff
+        # Как будет называться хук при запуске
+        name: ruff 
+        # Команда, которую нужно выполнить
+        entry: ruff check --config pyproject.toml --output-format concise
+        # Pre-commit будет запускать команду entry из активного venv, а не будет создавать новый
+        language: system
+        # Хук применяется только к .py-файлам
+        types: [python]
+        # Проверять только измненные файлы
+        pass_filenames: true
+
+      - id: black
+        name: black 
+        entry: black --config pyproject.toml --check
+        language: system
+        types: [python]
+        pass_filenames: true

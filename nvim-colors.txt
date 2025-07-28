@@ -1,0 +1,13 @@
+comments #B69967
+
+selection #575C61
+
+string numbers #8D959C
+
+window borders #505458
+
+nvim-tree borders #505458
+
+term borders #ABB5BE
+
+term background #2C313A
