@@ -87,13 +87,13 @@ $ ruff linter
 
 ### Упрощение и стиль
 
-    SIM	     simplify	          Упрощение конструкций — рекомендуется
-    C4	     comprehensions	      Оптимизация списковых выражений — полезно
-    RET	     return	              Стиль return (избыточность) — по вкусу
-    RSE	     raise	              Стиль raise — по вкусу
-    G	     logging-format	      Правильные строки логирования — если активно используешь logging
-    LOG	     logging	          Общие ошибки при логировании — рекомендуется
-    Q	     quotes	              Одинарные/двойные кавычки — по вкусу
+    SIM	     simplify             Упрощение конструкций — рекомендуется
+    C4	     comprehensions       Оптимизация списковых выражений — полезно
+    RET	     return               Стиль return (избыточность) — по вкусу
+    RSE	     raise                Стиль raise — по вкусу
+    G	     logging-format       Правильные строки логирования — если активно используешь logging
+    LOG	     logging              Общие ошибки при логировании — рекомендуется
+    Q	     quotes               Одинарные/двойные кавычки — по вкусу
 
 ### Документация
 
@@ -102,29 +102,29 @@ $ ruff linter
 
 ### Типизация
 
-    ANN	     annotations	      Требует type hints в функциях — полезно, если используешь
-    TC	     type-checking	      Перенос import typing под if TYPE_CHECKING — продвинуто
-    FA	     future-annotations	  Использование from __future__ import annotations
+    ANN	     annotations          Требует type hints в функциях — полезно, если используешь
+    TC	     type-checking        Перенос import typing под if TYPE_CHECKING — продвинуто
+    FA	     future-annotations   Использование from __future__ import annotations
 
 ### Проверки кода  
 
-    ERA	     eradicate	          Ищет закомментированный код (# print(...)) — рекомендуется
-    FIX	     fixme	              Ищет # TODO, # FIXME — полезно
-    TD	     todos	              То же самое — но с более широким подходом
-    T10	     debugger	          Ищет pdb, breakpoint() — рекомендуется
-    T20	     print	              Ищет отладочный print — особенно для продакшн
+    ERA	     eradicate            Ищет закомментированный код (# print(...)) — рекомендуется
+    FIX	     fixme                Ищет # TODO, # FIXME — полезно
+    TD	     todos                То же самое — но с более широким подходом
+    T10	     debugger             Ищет pdb, breakpoint() — рекомендуется
+    T20	     print                Ищет отладочный print — особенно для продакшн
 
 ### Инфраструткура и импорт
 
-    TID	     tidy-imports	      Предупреждение об относительных импортов — по вкусу
-    INP	     no-pep420	          Предотвращение namespace-пакетов без __init__.py
-    ICN	     import-conventions	  Именование импортов (import numpy as np)
+    TID	     tidy-imports         Предупреждение об относительных импортов — по вкусу
+    INP	     no-pep420            Предотвращение namespace-пакетов без __init__.py
+    ICN	     import-conventions   Именование импортов (import numpy as np)
 
-### Фреймворк и специальные случаи
+### Фреймворки и специальные случаи
 
-    DJ	     flake8-django	      Для Django-проектов
-    PT	     pytest-style	      Для проектов с pytest
-    FAST	     FastAPI	          Специальные правила для FastAPI
+    DJ	     flake8-django        Для Django-проектов
+    PT	     pytest-style         Для проектов с pytest
+    FAST         FastAPI              Специальные правила для FastAPI
     AIR	     Airflow	          Только если ты пишешь DAG’и
 
 ### Научные библиотеки
