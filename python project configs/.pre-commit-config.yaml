@@ -1,0 +1,24 @@
+# romz987 pre-commit pipeline config
+repos:
+  # Использовать локальные хуки, а не из Github 
+  - repo: local
+    hooks:
+        # Уникальный id хука
+      - id: ruff
+        # Как будет называться хук при запуске
+        name: ruff
+        # Команда которую нужно выполнить
+        entry: ruff check --config pyproject.toml --output-format concise
+        # Pre-commit будет запускать команду entry из активного venv, а не создавать новый
+        language: system
+        # Хук применяется только к .py файлам
+        types: [python]
+        # Проверять только измненнные файлы 
+        pass_filenames: true
+
+      - id: black
+        name: black
+        entry: black --check --config pyproject.toml
+        language: system
+        types: [python]
+        pass_filenames: true
