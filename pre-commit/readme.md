@@ -1,14 +1,18 @@
-# Pre-commit  
+# Pre-commit 
+Инструмент для управления pre-commit хуками 
 
-Установить pre-commit в venv:  
+
+----
+## Python pre-commit pipeline  
+1.Установить pre-commit в venv:  
 
     python -m venv venv  
 
-Создать файл кофигурации и написать конфигурацию:    
+2.Создать файл кофигурации и создать конфигурацию:    
 
     touch .pre-commit-config.yaml   
     ...
 
-Установить hook pre-commit в git:  
+3.Установить hook pre-commit в git:  
 
     pre-commit install  
