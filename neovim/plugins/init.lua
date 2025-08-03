@@ -81,7 +81,13 @@ return {
     keys = require("plugins.nvim-dap.nvim-dap-python.nvim-dap-python-keys").keys,
 
     config = function()
+      -- Указываем путь к интерпретатору Python внутри виртуального окружения,
+      -- автоматически созданного Mason при установке пакета debugpy.
+      -- vim.fn.stdpath("data") возвращает абсолютный путь к директории ~/.local/share/nvim/,
+      -- в которую Mason устанавливает пакеты.
       local python_path = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python"
+      -- Передаём путь к Python-интерпретатору в nvim-dap-python.
+      -- Этот интерпретатор используется для запуска адаптера debugpy, реализующего DAP-протокол.
       require("dap-python").setup(python_path)
     end,
   },
