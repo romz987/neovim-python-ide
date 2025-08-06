@@ -1,18 +1,29 @@
-## devtools  
-Документация:    
+# Neovim python IDE
 
-  - Pyright  
-  - Ruff  
-  - Black  
-  - Pre-cmmit  
-  - Debugpy  
+> [!NOTE]
+> Все для neovim python IDE
 
+## devtools
 
-## neovim  
-Конфигурационные файлы для NvChad    
-Файл с используемыми цветами    
-  
+Документация для плагинов:
 
-## python project configs  
-Конфигурационные файлы для pyright + ruff + black   
-Конфигурационные файлы для pre-commit  
+- Pyright
+- Ruff
+- Black
+- Pre-cmmit
+- Debugpy
+- Markdown
+- Neogit
+
+## neovim-configs
+
+Мои конфигурационные файлы для NvChad
+
+## neovim-basic
+
+Как это работает?
+
+## python project configs
+
+- Конфигурационные файлы для pyright + ruff + black
+- Конфигурационные файлы для pre-commit
