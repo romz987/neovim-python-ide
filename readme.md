@@ -19,7 +19,7 @@
 
 Мои конфигурационные файлы для NvChad
 
-## neovim-basic
+## neovim-basics
 
 Как это работает?
 
