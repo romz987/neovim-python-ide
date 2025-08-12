@@ -13,6 +13,7 @@ local options = {
   -- },
 }
 
+-- from conform plugin github page recipes
 vim.api.nvim_create_user_command("ConformFormat", function(args)
   local range = nil
   if args.count ~= -1 then
