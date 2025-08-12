@@ -7,104 +7,111 @@ local M = {}
 
 M.base46 = {
   -- основная тема
-	theme = "github_dark",
+	theme = "tundra",
   -- темы для быстрого переключения
-  theme_toggle = {"material-darker", "github_dark"},
+  theme_toggle = {"tundra", "bearded-arc"},
+
   -- переопределение стилей ( переопределение стандартных highlight групп )
 	hl_override = {
     -- цвет и стиль комментариев
 		Comment = { fg = "#B69967", italic = true },
-		["@comment"] = { fg = "#B69967", italic = true },
-    -- цвет выделения (selection) 
+		["@comment"] = { fg ="#B69967", italic = true },
+    -- цвет выделения (selection)
     Visual = { bg = "#575C61" },
-    -- цвет номеров строк 
-    LineNr = { fg = "#8D959C", italic = true },
+    -- цвет номеров строк
+    LineNr = { fg = "#8D959C" },
     -- цвет границ окон
     WinSeparator = { fg = "#505458" },
     -- цвет границы nvim-tree
     NvimTreeWinSeparator = { fg = "#505458" },
-    -- цвет границы плаващющего терминала
+    -- цвет границы плавающего терминала
     FloatBorder = { fg = "#ABB5BE" },
     -- цвет фона терминала
-    NormalFloat = { bg = "#2c313a" },
+    NormalFloat = { bg = "#2C313A" },
 
-    -- посмотреть все, что доступно для переопределения можно так
-    -- :help highlight-groups - список стандартных групп  
+    -- посмотреть все, что доступно для переопределения можно так:
+    -- :help highlight-groups - список стандартных групп
     -- :hi - посмотреть текущие группы и их стили
 	},
 
-  -- прозрачность
+  -- прозрачность 
   transparency = true,
 
-  -- не будем переопределять, но я откомментирую 
-  -- hl_add = {}, -- добавление новых highlight-групп. ( добавление "стилей" без переопределения )
-  -- integrations = {}, -- настройка интеграций тем с плагинами (например, telescope, lsp, и т.д.).
-  -- changed_themes = {}, -- кастомизация цветовых схем (base46) по темам.
+  -- не будем переопределять, но я откомментирую
+  -- hl_add = {}, - добавление новых highlight групп (добавление "стилей" без переопределения)
+  -- integrations = {}, - настройка интеграций тем с плагинами (e.g. telescope, lsp, etc)
+  -- changed_themes = {}, - кастомизация цветовых схем (base46) по темам
 }
 
--- элементы интерфеса
+-- элементы интерфейса
 M.ui = {
-  -- cmp - настройки автодополнения: оставляем default 
-  -- telescope - настройки внешнего вида плагина telescope: оставляем default
+  -- cmp (автодополнение) - оставляем default ("красивше" там все равно нет)
+  -- telescope - внешний вид плагина telescope - оставляем default
+
   -- настройки statusline
   statusline = {
-    theme = "vscode"
+    theme = "vscode",
   },
 
   -- настройки табов
   tabufline = {
     -- ширина таба
-    bufwidth = 25,
+    bufwidth = 35,
   },
 }
 
 -- стартовый экран
 M.nvdash = { load_on_startup = true }
 
--- конфигурация плавающего терминала (floating terminal)
+-- конфигурация плавающего терминала
 M.term = {
   float = {
     relative = "editor", -- позиция относительно окна neovim (а не курсора)
     row = 0.2, -- отступ сверху в процентах (20%)
-    width = 0.6, -- ширина окна (60%)
-    height = 0.7, -- высота окна (70%)
+    width = 0.6, -- ширина (60%)
+    height = 0.7, -- высота (70%)
     border = "rounded", -- сгладить границу
   }
 }
 
--- всплывающая подсказка с аргументами функции во время ее вызова: оставляем default 
+-- всплывающая подсказка с аргументами функции во время ее вызова - оставим default 
 -- M.lsp = { signature = true }
 
 -- стили cheatsheet 
 M.cheatsheet = {
   theme = "grid",
-  -- что исключить из выдачи 
-  -- excluded_groups = {}.
+  -- что исключить из выдачи
+  -- excluded_groups = {}
 }
 
--- mason 
+-- mason
 M.mason = {
-  -- список lsp-серверов, линтеров и форматтеров, которые надо установить
+  -- список lsp-серверов, линтеров и форматтеров, которые нужно установить
   pkgs = {
     "jedi-language-server",
     "pyright",
     "ruff",
-    -- markdown
+    "black",
+    "debugpy",
+
+    -- markdown lsp
     "marksman",
-    -- toml 
-    "taplo",
-  },
-  -- список исключения 
-  -- skip = {},
+    -- markdown linter - работает в conform
+    "markdownlint-cli2",
+    -- markdown formatter 
+    "mdformat",
+  }
+  -- список тех, что нужно исключить
+  -- skip = {}
 }
 
--- настройка плагина colorify.nvim, который показывает цвета из кода прямо в редакторе 
+-- настройка плагина colorify.nvim, который показывает цвета из кода прямо в редакторе
 M.colorify = {
-  -- включить/выключить 
+  -- включить/выключить
   enabled = true,
   -- способ отображения: fg - цвет текста, bg - цвет фона, virtual - иконка рядом с текстом
   mode = "virtual",
-  -- символ, отображаемый в virtual режиме 
+  -- символ, отображаемый в virtual режиме
   virt_text = "󱓻 ",
   -- hex - подсвечивать hex-цвета, lspvars - подсвечивать переменные с цветами из lsp 
   highlight = { hex = true, lspvars = true },
