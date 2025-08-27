@@ -31,6 +31,7 @@ Autumn, 2025
 - [Annex A: How autocompletion works](#Annex-A)
 - [Annex B: How LSP works](#Annex-B)
 - [Annex C: jedi vs pyright](#Annex-B)
+- [Annex D: Debugging](#Annex-D)
 - [Tips and tricks](#Tips-and-tricks)
   - [LSP messages](#LSP-messages)
 
@@ -353,7 +354,7 @@ M.mason = {
 
 #### Подключение
 
-**Способ 1**:  
+**Способ 1**:\
 Простой, без конфигурации.\
 В файле lspconfig.lua:
 
@@ -364,8 +365,8 @@ local servers = { "html", "cssls", "jedi-language-server" -- или pyright }
 vim.lsp.enable(servers)
 ```
 
-**Способ 2**:  
-Когда необходимо прописать конфигурацию для lsp-сервера.  
+**Способ 2**:\
+Когда необходимо прописать конфигурацию для lsp-сервера.\
 В файле lspconfig.lua:
 
 ```lua
@@ -394,10 +395,10 @@ end
 
 #### Краткий обзор
 
-**jedi-language-server**  
+**jedi-language-server**\
 Это минималистичный python lsp-server, главным образом ориентированный на автодополение.
 
-**pyright**  
+**pyright**\
 Это мощный и тонко настраиваемый python lsp-server от microsoft.
 
 Краткое сравнение jedi и pyright можно посмотреть в [Annex C](#Annex-C)
@@ -456,9 +457,9 @@ ______________________________________________________________________
 **Tree-sitter**\
 [Treesitter lib Web](https://tree-sitter.github.io/tree-sitter/)
 
-**LSP-servers**  
-[Pyright Web](https://microsoft.github.io/pyright/#/)  
-[Pyright GitHub](https://github.com/microsoft/pyright)  
+**LSP-servers**\
+[Pyright Web](https://microsoft.github.io/pyright/#/)\
+[Pyright GitHub](https://github.com/microsoft/pyright)\
 [Jedi-language-server](https://github.com/pappasam/jedi-language-server)
 
 ## Annex A
@@ -504,6 +505,41 @@ LSP-сервера отличаются друг от друга по функц
 ## Annex C
 
 **jedi-language-server vs pyrigh**
+
+## Annex D
+
+**Как работает отладка в Neovim**
+
+**DAP-протокол**\
+*Debugger Adapter Protocol*\
+Это спецификация согласно которой реализован интерфейс отладчика (сервера) для работы с клиентом.\
+Neovim не имеет встроенного DAP-клиента и не поддерживает протокол DAP.
+
+Плагин **nvim-dap** реализует DAP-протокол и является debugger-клиентом для Neovim.\
+Самым процессом отладки Python-кода управляет программа Debugpy.\
+Neovim "общается" с Debugpy посредством **nvim-dap**.\
+Debugpy запускает файл для отладки с помощью системного интерпретатора.\
+Debugpy управляет процессом отладки через API интерпретатора (Python trace API?).
+
+Для работы с отладчиком Debugpy в Neovim необходимы еще несколько плагинов, которые по сути являются
+надстройками для nvim-dap:
+
+- **nvim-dap-ui**\
+  Это user interface для nvim-dap: отображает удобные панели со стеком вызовов, переменными, breakpoints, REPL и так далее.
+
+- **nvim-dap-virtual-text**\
+  Показывает значения переменных прямо в коде через Neovim API как виртуальный текст - extmarks (так же, как и сообщения LSP-сервера).
+
+- **nvim-nio**\
+  *Зависимость nvim-dap-ui*\
+  Библиотека для асинхронного ввода-вывода
+
+- **nvim-dap-python**\
+  Автоматически настраивает nvim-dap для работы с Debugpy.
+
+<br>
+
+![nvim-dap](./images/debugging/nvim-dap.svg)
 
 ## Tips and tricks
 
