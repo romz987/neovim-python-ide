@@ -19,10 +19,13 @@ Autumn, 2025
 - [Part 2: Installing developer tooling](<>)
   - [Treesitter](#Treesitter)
   - [LSP-server](#LSP-server)
-  - [Linter](<>)
-  - [Formatter](<>)
+  - [Linter](#Linter)
+  - [Formatter](#Formatter)
 - [Part 3: Pre-commit pipeline](<>)
-- [Part 4: Debugger](<>)
+- [Part 4: Debugger](#Debugger)
+  - [Main info](#Main-info)
+  - [Configuration](#Configuration)
+  - [How to debug Django/Flask](#How-to-debug)
 - [Part 5: Additional tools](<>)
   - [Notifications](<>)
   - [Git](<>)
@@ -401,7 +404,7 @@ end
 **pyright**\
 Это мощный и тонко настраиваемый python lsp-server от microsoft.
 
-Краткое сравнение jedi и pyright можно посмотреть в [Annex C](#Annex-C)
+*Краткое сравнение jedi и pyright можно посмотреть в [Annex C](#Annex-C)*
 
 ### Linter
 
@@ -428,6 +431,235 @@ ______________________________________________________________________
 ______________________________________________________________________
 
 ## Part 4: Debugger
+
+### Main info
+
+Для отладки Python-кода в Neovim требуется установка следующих плагинов:
+
+- nvim-dap
+- nvim-dap-ui
+- nvim-dap-virtual-text
+- nvim-dap-nio
+- nvim-dap-python
+
+*Подробнее о том, как работает процесс отладки в Neovim можно узнать в [Annex D](#Annex-D)*
+
+Список необходимых для установки плагинов, параметры их конфигурации и hotkeys необходимо написать в plugins/init.lua.\
+Но это еще не все - правильнее всего будет вынести параметры конфигурации и hotkeys в отдельные файлы.\
+Сделать это можно по разному, но я предлагаю следующую структуру директории plugins:
+
+```
+plugins
+.
+├──  init.lua
+└──  nvim-dap
+    ├──  nvim-dap-keys.lua
+    ├──  nvim-dap-python
+    │   └──  nvim-dap-python-keys.lua
+    └──  nvim-dap-ui
+        ├──  nvim-dap-ui-config.lua
+        └──  nvim-dap-ui-keys.lua
+```
+
+**nvim-dap-keys.lua**\
+Горячие клавиши для управления nvim-dap.
+
+**nvim-dap-python-keys.lua**\
+Горячие клавиши для управления nvim-dap-python.\
+(Отладка классов и методов)
+
+**nvim-dap-ui-config.lua**\
+Конфигурация для nvim-dap-ui
+
+**nvim-dap-ui-keys.lua**\
+Горячик клавиши для управления nvim-dap-ui:
+
+- открыть/закрыть интерфейс nvim-dap-ui
+- выполнить eval
+
+### Configuration
+
+> [!NOTE]
+> Хорошо откомментированный код представленных ниже конфигураций можно найти в директории configs/plugins
+
+**Файл plugins/init.lua**
+
+```lua
+  {
+    "mfussenegger/nvim-dap",
+    ft = "python",
+    dependencies = {
+      {
+        "rcarriga/nvim-dap-ui",
+        opts = {},
+        keys = require("plugins.nvim-dap.nvim-dap-ui.nvim-dap-ui-keys").keys,
+        dependencies = { "nvim-neotest/nvim-nio" },
+        config = function (_, opts)
+          require("plugins.nvim-dap.nvim-dap-ui.nvim-dap-ui-config").setup(opts)
+        end,
+      },
+      {
+        "theHamsta/nvim-dap-virtual-text",
+        opts = {},
+      },
+    },
+
+    keys = require("plugins.nvim-dap.nvim-dap-keys").keys,
+
+    config = function ()
+      vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
+      local vscode = require("dap.ext.vscode")
+      local json = require("plenary.json")
+      vscode.json_decode = function(str)
+        return vim.json.decode(json.json_strip_comments(str))
+      end
+    end,
+  },
+
+  {
+    "mfussenegger/nvim-dap-python",
+    ft = "python",
+    keys = require("plugins.nvim-dap.nvim-dap-python.nvim-dap-python-keys").keys,
+
+    config = function ()
+      local python_path = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python"
+      require("dap-python").setup(python_path)
+    end,
+  },
+
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+       dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+       ft = "markdown",
+    ---@module 'render-markdown'
+    opts = {},
+  },
+```
+
+**Файл nvim-dap/nvim-dap-keys.lua**
+
+```lua
+local M = {}
+
+M.keys = {
+    { "<leader>dB", function() require("dap").set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = "Breakpoint Condition" },
+    { "<leader>db", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
+    { "<leader>dc", function() require("dap").continue() end, desc = "Run/Continue" },
+    { "<leader>dC", function() require("dap").run_to_cursor() end, desc = "Run to Cursor" },
+    { "<leader>dg", function() require("dap").goto_() end, desc = "Go to Line (No Execute)" },
+    { "<leader>di", function() require("dap").step_into() end, desc = "Step Into" },
+    { "<leader>dj", function() require("dap").down() end, desc = "Down" },
+    { "<leader>dk", function() require("dap").up() end, desc = "Up" },
+    { "<leader>dl", function() require("dap").run_last() end, desc = "Run Last" },
+    { "<leader>do", function() require("dap").step_out() end, desc = "Step Out" },
+    { "<leader>dO", function() require("dap").step_over() end, desc = "Step Over" },
+    { "<leader>dP", function() require("dap").pause() end, desc = "Pause" },
+    { "<leader>dr", function() require("dap").repl.toggle() end, desc = "Toggle REPL" },
+    { "<leader>ds", function() require("dap").session() end, desc = "Session" },
+    { "<leader>dt", function() require("dap").terminate() end, desc = "Terminate" },
+    { "<leader>dw", function() require("dap.ui.widgets").hover() end, desc = "Widgets" },
+}
+
+return M
+```
+
+**Файл nvim-dap/nvim-dap-python/nvim-dap-python-keys.lua**
+
+```lua
+local M = {}
+
+M.keys = {
+      { "<leader>dPt", function() require('dap-python').test_method() end, desc = "Debug Method", ft = "python" },
+      { "<leader>dPc", function() require('dap-python').test_class() end, desc = "Debug Class", ft = "python" }
+}
+
+return M
+```
+
+**Файл nvim-dap/nvim-dap-ui/nvim-dap-ui-keys**
+
+```lua
+local M = {}
+
+M.keys = {
+    { "<leader>du", function() require("dapui").toggle({ }) end, desc = "Dap UI" },
+    { "<leader>de", function() require("dapui").eval() end, desc = "Eval", mode = {"n", "v"} },
+}
+
+return M
+
+```
+
+**Файл nvim-dap/nvim-dap-ui/nvim-dap-ui-config**
+
+```lua
+local M = {}
+
+function M.setup(opts)
+    local dap = require("dap")
+
+    dap.adapters.python = {
+        type = 'executable';
+        command = 'python';
+        args = { '-m', 'debugpy.adapter' };
+    }
+
+    dap.configurations.python = {
+        {
+            type = 'python';
+            request = 'launch';
+            name = 'Start Django debugging';
+            program = '/path/to/django/manage.py';
+            args = {'runserver'};
+            console = 'integratedTerminal';
+            justMyCode = true;
+        },
+    }
+
+    local dapui = require("dapui")
+    dapui.setup(opts)
+    dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open({})
+    end
+    dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close({})
+    end
+    dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close({})
+    end
+    vim.fn.sign_define('DapBreakpoint', {text='⬤', texthl='DapBreakpoint', linehl='', numhl=''})
+    vim.cmd('highlight DapBreakpoint guifg=#FF0000 ctermfg=red')
+end
+
+return M
+```
+
+### How to debug
+
+**Django/Flask**
+
+Для того, чтобы отлаживать приложения на Django или Flask необходимо в файле **nvim-dap-ui-config** прописать
+путь до файла run.py приложения в случае Flask и файла manage.py в случае Django.\
+В случае Flask **args ={};** нужно оставить пустым.
+
+Flask
+
+```lua
+dap.configurations.python = {
+    {
+        type = 'python';
+        request = 'launch';
+        name = 'Start Flask Debugging';
+        program = '/path/to/run.py';
+        args = {''};
+        console = 'integratedTerminal';
+        justMyCode = true;
+    },
+}
+```
+
+Далее, нужно использовать комбинацию клавиш <leader>dc для запуска программы для отладки и мы увидим возможность
+выбрать Start Flask Debugging. Имя приложения в **name = {}** можно указать любое.
 
 ______________________________________________________________________
 
@@ -461,6 +693,10 @@ ______________________________________________________________________
 [Pyright Web](https://microsoft.github.io/pyright/#/)\
 [Pyright GitHub](https://github.com/microsoft/pyright)\
 [Jedi-language-server](https://github.com/pappasam/jedi-language-server)
+
+**Debugpy**\
+[LazyVim DAP Core](https://www.lazyvim.org/extras/dap/core)\
+[](<>)
 
 ## Annex A
 
