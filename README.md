@@ -19,13 +19,19 @@ Autumn, 2025
 - [Part 2: Installing developer tooling](<>)
   - [Treesitter](#Treesitter)
   - [LSP-server](#LSP-server)
-  - [Linter](#Linter)
-  - [Formatter](#Formatter)
-- [Part 3: Pre-commit pipeline](<>)
-- [Part 4: Debugger](#Debugger)
+  - [Linters Ruff](#Linters-ruff)
+    - [Install ruff](<>)
+    - [Use ruff](<>)
+    - [Configure ruff](<>)
+  - [Formatter Black](#Formatter-black)
+    - [Install black](<>)
+    - [Use black](<>)
+    - [Configure black](<>)
+- [Part 3: Debugger](#Debugger)
   - [Main info](#Main-info)
   - [Configuration](#Configuration)
   - [How to debug Django/Flask](#How-to-debug)
+- [Part 4: Pre-commit pipeline](<>)
 - [Part 5: Additional tools](<>)
   - [Notifications](<>)
   - [Git](<>)
@@ -407,31 +413,190 @@ end
 
 *Краткое сравнение jedi и pyright можно посмотреть в [Annex D](#Annex-D)*
 
-### Linter
+### Linters ruff
 
 **Ruff**\
-Краткая информация\
-Установка\
-Варианты использования\
-Конфигурация
+Это инструмент для статического анализа кода.\
+Он включает в себя множество линтеров, которые мы можем подключать и отключать по мере необходимости.
 
-### Formatter
+*Краткий обзор всех доступных по умолчанию линтеров можно посмотреть в tooling/ruff/readme.md*
 
-**Black**\
-Краткая информация\
-Установка\
-Варианты использования\
-Конфигурация
+#### Install ruff
+
+Чтобы установить ruff нужно добавить его в chadrc.lua:
+
+```lua
+M.mason = {
+  -- список lsp-серверов, линтеров и форматтеров, которые нужно установить
+  pkgs = {
+    "...", -- уже добавленные программы
+    "ruff",
+  }
+}
+```
+
+И выполнить:
+
+```
+:MasonInstallAll
+```
+
+#### Use ruff
+
+Использовать ruff можно двумя способами.
+
+1. Подключить ruff как lsp-server:
+   *Тогда сообщения от линтеров будут выводиться прямо в neovim.*
+
+Для этого в файле lspconfig.lua необходимо добавить соответствующую запись:
+
+```lua
+local servers = {
+  -- ...
+  ruff = {},
+}
+
+for name, opts in pairs(servers) do
+  vim.lsp.enable(name)  -- nvim v0.11.0 or above required
+  vim.lsp.config(name, opts) -- nvim v0.11.0 or above required
+end
+```
+
+2. Использовать ruff в эмуляторе терминала при помощи соотвествующих команд.
+
+Важно отметить, что если активно виртуальное окружение, то для того, чтобы можно было вызывать ruff в командной оболочке придется установить его в виртуальное окружение.
+
+#### Configure ruff
+
+pyproject.toml
+
+### Formatter black
+
+**Black**\\
+
+Это классический formatter для python-кода.\
+Зачем использовать black, если ruff тоже умеет форматировать код?
+
+#### Install black
+
+Чтобы установить black нужно добавить его в chadrc.lua:
+
+```lua
+M.mason = {
+  -- список lsp-серверов, линтеров и форматтеров, которые нужно установить
+  pkgs = {
+    "...", -- уже добавленные программы
+    "black",
+  }
+}
+```
+
+И выполнить:
+
+```
+:MasonInstallAll
+```
+
+#### Use black
+
+Чтобы начать использовать black нужно добавить соответствующую конфигурацию в файл conform.lua:
+
+```lua
+local options = {
+  formatters_by_ft = {
+    lua = { "stylua" },
+    python = { "black" },
+    -- css = { "prettier" },
+    -- html = { "prettier" },
+  },
+
+  -- format_on_save = {
+  --   -- These options will be passed to conform.format()
+  --   timeout_ms = 500,
+  --   lsp_fallback = true,
+  -- },
+}
+```
+
+Далее, сделаем так, чтобы lazy загружал плагин conform.nvim при открытии любого python файла.
+Для этого добавим *ft = python* в plugins/init.lua:
+
+```lua
+{
+"stevearc/conform.nvim",
+-- event = 'BufWritePre', -- uncomment for format on save
+opts = require "configs.conform",
+-- загрузить conform если открываем python файл 
+ft = "python",
+},
+```
+
+Мы можем делать форматирование тремя разными способами:
+
+1. Автоматическое форматирование при сохранении файла.
+   *Для этого нужно просто раскомментировать format_on_save:*
+
+```lua
+local options = {
+  formatters_by_ft = {
+    lua = { "stylua" },
+    python = { "black" },
+    -- css = { "prettier" },
+    -- html = { "prettier" },
+  },
+
+  format_on_save = {
+    -- These options will be passed to conform.format()
+    timeout_ms = 500,
+    lsp_fallback = true,
+  },
+}
+```
+
+2. Форматирование командой.
+   *Для этого в файл conform.lua нужно добавить следующий код:*
+
+```lua
+-- from conform plugin github page recipes
+vim.api.nvim_create_user_command("ConformFormat", function(args)
+  local range = nil
+  if args.count ~= -1 then
+    local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
+    range = {
+      start = { args.line1, 0 },
+      ["end"] = { args.line2, end_line:len() },
+    }
+  end
+  require("conform").format({ async = true, lsp_format = "fallback", range = range })
+end, { range = true })
+```
+
+После этого форматирование будет доступно по команде:
+
+```
+:ConformFormat
+```
+
+3. Добавить комбинацию клавиш для форматирования.
+   *Для этого нужно написать в mappings.lua следующую конфигурацию:*
+
+```lua
+-- romz987 conform format buffer 
+map("n", "<leader>fb", function()
+  vim.cmd("ConformFormat")
+end, { desc = "Format buffer with conform" })
+```
+
+Теперь форматирование будет доступно нажатием последовательно пробел - f - b\
+Соответствующую запись можно будет увидеть в окне which-key.nvim.
+
+#### Configure black
+
+pyproject.toml
 
 ______________________________________________________________________
 
-## Part 3: Pre-commit pipeline
-
-Не обязательно и не относится к Neovim и NvChad, но интересно и очень полезно
-
-______________________________________________________________________
-
-## Part 4: Debugger
+## Part 3: Debugger
 
 ### Main info
 
@@ -661,6 +826,12 @@ dap.configurations.python = {
 
 Далее, нужно использовать комбинацию клавиш <leader>dc для запуска программы для отладки и мы увидим возможность
 выбрать Start Flask Debugging. Имя приложения в **name = {}** можно указать любое.
+
+______________________________________________________________________
+
+## Part 4: Pre-commit pipeline
+
+Не обязательно и не относится к Neovim и NvChad, но интересно и очень полезно
 
 ______________________________________________________________________
 
