@@ -30,7 +30,7 @@ Autumn, 2025
 - [Part 3: Debugger](#Debugger)
   - [Main info](#Main-info)
   - [Configuration](#Configuration)
-  - [How to debug Django/Flask](#How-to-debug)
+  - [How to debug Django/Flask/FastAPI](#How-to-debug)
 - [Part 4: Pre-commit pipeline](<>)
 - [Part 5: Additional tools](<>)
   - [Notifications](<>)
@@ -802,11 +802,27 @@ return M
 
 ### How to debug
 
-**Django/Flask**
+**Django/Flask/FastAPI**
 
 Для того, чтобы отлаживать приложения на Django или Flask необходимо в файле **nvim-dap-ui-config** прописать
 путь до файла run.py приложения в случае Flask и файла manage.py в случае Django.\
 В случае Flask **args ={};** нужно оставить пустым.
+
+Django
+
+```lua
+dap.configurations.python = {
+    {
+        type = 'python';
+        request = 'launch';
+        name = 'Start Django debugging';
+        program = '/path/to/django/manage.py';
+        args = {'runserver'};
+        console = 'integratedTerminal';
+        justMyCode = true;
+    },
+}
+```
 
 Flask
 
@@ -824,8 +840,35 @@ dap.configurations.python = {
 }
 ```
 
+**Как это работает с FastAPI**
+
+В конфигурациях для Django и Flask инициализируется переменная program, которая содержит путь до конкретного run.py, который запускает конкретное приложение.  
+
+В конфигурации для FastAPI вместо переменной program инициализируется переменная module, где указан uvicorn (ASGI для FastAPI), который запускается из текущего активного виртуального окружения.  
+В аргументах args указывается 'src.main:app', то есть импорт-путь относительно корня проекта модуля main (main.py), который содержит переменную app (app = FastAPI()).
+
+FastAPI
+
+```lua
+dap.configurations.python = {
+    {
+        type = 'python',
+        request = 'launch',
+        name = 'Start FastAPI (uvicorn)',
+        module = 'uvicorn',   -- вместо program используем module
+        args = {
+            'src.main:app',
+            '--reload',
+            -- '--port', '8000'
+        },
+        console = 'integratedTerminal',
+        justMyCode = true,
+    }
+}
+```
+
 Далее, нужно использовать комбинацию клавиш <leader>dc для запуска программы для отладки и мы увидим возможность
-выбрать Start Flask Debugging. Имя приложения в **name = {}** можно указать любое.
+выбрать Start Django debugging, Start Flask Debugging или Start FastAPI (uvicorn). Имя приложения в **name = {}** можно указать любое.
 
 ______________________________________________________________________
 
