@@ -80,6 +80,36 @@
 
 ## Другие полезные плагины
 
+### AI-ассистент
+
+`yetone/avante.nvim`
+
+[avante github page](https://github.com/yetone/avante.nvim)
+
+### Markdown
+
+Рендеринг Markdown прямо в буфере Neovim
+
+`MeanderingProgrammer/render-markdown.nvim`
+
+[render-markdown github page](https://github.com/MeanderingProgrammer/render-markdown.nvim)
+
+### Git
+
+Git-клиент внутри Neovim
+
+`NeogitOrg/neogit`
+
+[neogit github page](https://github.com/NeogitOrg/neogit)
+
+### Уведомления
+
+Система уведомлений для Neovim
+
+`rcarriga/nvim-notify` или `noice.nvim`
+
+[nvim-notify github page](https://github.com/rcarriga/nvim-notify)
+
 ## Список использованных материалов
 
 neovim: [neovim official website](https://neovim.io/)  
