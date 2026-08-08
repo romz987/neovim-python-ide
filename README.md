@@ -1,5 +1,11 @@
 # Neovim Python IDE
 
+## Содержание
+
+- [Плагины NvChad по умолчанию](#плагины-nvchad-по-умолчанию)
+- [Другие полезные плагины](#другие-полезные-плагины)
+- [Список использованных материалов](#список-использованных-материалов)
+
 ## Плагины NvChad по умолчанию
 
 ### Плагины NvChad
@@ -71,3 +77,13 @@
 | nvim-telescope/telescope.nvim | Универсальный fuzzy-поиск: файлы, grep, diagnostics, git, LSP и сотни расширений | https://github.com/nvim-telescope/telescope.nvim |
 | lewis6991/gitsigns.nvim | Git-значки в gutter-колонке: добавлено, изменено, удалено, blame, hunk-навигация | https://github.com/lewis6991/gitsigns.nvim |
 
+
+## Другие полезные плагины
+
+## Список использованных материалов
+
+neovim: [neovim official website](https://neovim.io/)  
+neovim: [neovim github page](https://github.com/neovim/neovim)  
+  
+nvchad: [nvchad official website](https://nvchad.com/)  
+nvchad: [nvchad github page](https://github.com/NvChad/NvChad)  
