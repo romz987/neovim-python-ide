@@ -228,7 +228,7 @@ Git-клиент внутри Neovim
 
 `kevinhwang91/nvim-ufo`
 
-[neovim ufo](https://github.com/kevinhwang91/nvim-ufo)
+[neovim ufo github page](https://github.com/kevinhwang91/nvim-ufo)
 
 ### Скроллинг
 
@@ -244,7 +244,7 @@ Git-клиент внутри Neovim
 
 `sphamba/smear-cursor`
 
-[smear-cursor](https://github.com/sphamba/smear-cursor.nvim)
+[smear-cursor github page](https://github.com/sphamba/smear-cursor.nvim)
 
 ### Уведомления
 
