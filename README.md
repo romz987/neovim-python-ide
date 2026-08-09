@@ -137,6 +137,30 @@ Git-клиент внутри Neovim
 
 [neogit github page](https://github.com/NeogitOrg/neogit)
 
+### Фолдинг
+
+Модный фолдинг
+
+`kevinhwang91/nvim-ufo`
+
+[https://github.com/kevinhwang91/nvim-ufo]
+
+### Скроллинг
+
+Плавный скроллинг
+
+`karb94/neoscroll`
+
+[https://github.com/karb94/neoscroll.nvim]
+
+### Курсор
+
+Модный курсор
+
+`sphamba/smear-cursor`
+
+[https://github.com/sphamba/smear-cursor.nvim]
+
 ### Уведомления
 
 Система уведомлений для Neovim
@@ -152,6 +176,8 @@ neovim: [neovim github page](https://github.com/neovim/neovim)
   
 nvchad: [nvchad official website](https://nvchad.com/)  
 nvchad: [nvchad github page](https://github.com/NvChad/NvChad)  
+
+dotfyle - discover neovim plugins: [dotfyle](#https://dotfyle.com/)  
 
 ## Приложение 1: Как работает подсветка синтаксиса
 
