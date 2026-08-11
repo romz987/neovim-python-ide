@@ -114,7 +114,12 @@ NvChad поставляется с предустановленным набор
 
 ## Часть 2: Установка и настройка инструментов разработчика
 
-### Настройка Treesitter
+### Treesitter
+
+Установка необходимых парсеров:
+```bash
+:TSInstall python lua html css json jsonc bash markdown markdown_inline yaml toml dockerfile
+```
 
 ### Установка и настройка LSP-сервера pyright
 
@@ -334,3 +339,31 @@ dotfyle - discover neovim plugins: [dotfyle](#https://dotfyle.com/)
 
 ## Дополнительные советы
 
+### Корректное определение типов файлов на примере docker-compose
+
+Как распознаётся тип текущего файла:
+```bash
+:set filetype?
+```
+
+Создать файл filetypes.lua в `~/.config/nvim/lua/`:  
+
+```lua
+vim.filetype.add({
+  filename = {
+    ["docker-compose.yml"] = "yaml.docker-compose",
+    ["docker-compose.yaml"] = "yaml.docker-compose",
+    ["compose.yml"] = "yaml.docker-compose",
+    ["compose.yaml"] = "yaml.docker-compose",
+  },
+})
+```
+
+Добавить в `init.lua`:  
+```lua
+...
+require "filetypes"
+...
+```
+
+Перепроверить `filetype?`
