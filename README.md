@@ -200,11 +200,78 @@ NvChad поставляется с предустановленным набор
 
 ## Другие полезные плагины
 
+### Интерфейс и уведомления
+
+`folke/noice.nvim`
+
+Заменяет стандартный UI для сообщений, командной строки и popup-меню:  
+
+- Позволяет гибко маршрутизировать сообщения от neovim и отображать их в разных представлениях  
+- Ведёт историю сообщений  
+- Добавляет UI для Command line  
+- Добавляет UI для поиска  
+- Добавляет UI для Hover-документации от LSP  
+- Добавляет UI для LSP signature help  
+- Подсвечивает синтаксис Vim/Lua прямо в Command line  
+- Отображает длинный вывод команд в обычных буферах/split  
+- Подсвечивает синтаксис Vim/Lua прямо в Command line  
+
+[nvim-notify github page](https://github.com/rcarriga/nvim-notify)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### AI-ассистент
 
 `yetone/avante.nvim`
 
 [avante github page](https://github.com/yetone/avante.nvim)
+
+### Подсветка отступов и вложенности
+
+Отображение вертикальных направляющих отступов.
+Улучшает читаемость кода.
+
+`lukas-reineke/indent-blankline.nvim`
+
+[indent-blankline github page](https://github.com/lukas-reineke/indent-blankline.nvim)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### Markdown
 
@@ -246,13 +313,6 @@ Git-клиент внутри Neovim
 
 [smear-cursor github page](https://github.com/sphamba/smear-cursor.nvim)
 
-### Уведомления
-
-Система уведомлений для Neovim
-
-`rcarriga/nvim-notify` или `noice.nvim`
-
-[nvim-notify github page](https://github.com/rcarriga/nvim-notify)
 
 ## Список использованных материалов
 
