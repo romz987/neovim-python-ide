@@ -216,14 +216,21 @@ NvChad поставляется с предустановленным набор
 - Отображает длинный вывод команд в обычных буферах/split  
 - Подсвечивает синтаксис Vim/Lua прямо в Command line  
 
-[nvim-notify github page](https://github.com/rcarriga/nvim-notify)
+[noice github page](https://github.com/folke/noice.nvim)
 
+`lukas-reineke/indent-blankline.nvim`
 
+Подсветка направляющих отступов и вложенности.  
+Улучшает читаемость кода.
 
+[indent-blankline github page](https://github.com/lukas-reineke/indent-blankline.nvim)
 
+`HiPhish/rainbow-delimiters.nvim`
 
+Подсвечивает вложенные разделители, теги и ключевые слова разными цветами.  
+Улучшает читаемость кода (особенно html и jsx).  
 
-
+[rainbow-delimiters github page](https://github.com/hiphish/rainbow-delimiters.nvim)
 
 
 
@@ -243,14 +250,7 @@ NvChad поставляется с предустановленным набор
 
 [avante github page](https://github.com/yetone/avante.nvim)
 
-### Подсветка отступов и вложенности
 
-Отображение вертикальных направляющих отступов.
-Улучшает читаемость кода.
-
-`lukas-reineke/indent-blankline.nvim`
-
-[indent-blankline github page](https://github.com/lukas-reineke/indent-blankline.nvim)
 
 
 
