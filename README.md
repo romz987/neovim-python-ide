@@ -11,12 +11,12 @@
     - [Установка и настройка LSP-сервера pyright](#)
     - [Установка и настройка линтера ruff](#)
     - [Установка и настройка форматтера black](#)
-- [Часть 3: Дебаггер](#)
-    - [Установка и настройка](#)
+- [Часть 3: Установка и настройка отладчика](#)
+- [Часть 4: Отладка](#) 
     - [Как отлаживать Django](#)
     - [Как отлаживать Flask](#)
     - [Как отлаживать FastAPI](#)
-- [Часть 4: Установка и настройка pre-commit pipeline](#)
+- [Часть 5: Установка и настройка pre-commit pipeline](#)
 - [Полезные плагины](#другие-полезные-плагины)
 - [Список использованных материалов](#список-использованных-материалов)
 
@@ -288,9 +288,228 @@ end, { desc = "Format buffer with conform" })
 
 Конфигурация пишется в `pyproject.toml`.  
 
-## Часть 3: Установка и настройка дебаггера
+## Часть 3: Установка и настройка отладчика
 
-## Часть 4: Установка и настройка pre-commit pipeline
+В директории `plugins` создать директорию `nvim-dap` со следующим содержимым:  
+```text
+plugins/
+    ├── ...
+    └── nvim-dap/
+        ├── nvim-dap-keys.lua
+        ├── nvim-dap-python/
+        │   └── nvim-dap-python-keys.lua
+        └── nvim-dap-ui/
+            ├── nvim-dap-ui-config.lua
+            └── nvim-dap-ui-keys.lua
+```
+
+В файл `plugins/init.lua` добавить:  
+```lua
+  {
+    "mfussenegger/nvim-dap",
+    ft = "python",
+    dependencies = {
+      {
+        "rcarriga/nvim-dap-ui",
+        opts = {},
+        keys = require("plugins.nvim-dap.nvim-dap-ui.nvim-dap-ui-keys").keys,
+        dependencies = { "nvim-neotest/nvim-nio" },
+        config = function (_, opts)
+          require("plugins.nvim-dap.nvim-dap-ui.nvim-dap-ui-config").setup(opts)
+        end,
+      },
+      {
+        "theHamsta/nvim-dap-virtual-text",
+        opts = {},
+      },
+    },
+
+    keys = require("plugins.nvim-dap.nvim-dap-keys").keys,
+
+    config = function ()
+      vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
+      local vscode = require("dap.ext.vscode")
+      local json = require("plenary.json")
+      vscode.json_decode = function(str)
+        return vim.json.decode(json.json_strip_comments(str))
+      end
+    end,
+  },
+
+  {
+    "mfussenegger/nvim-dap-python",
+    ft = "python",
+    keys = require("plugins.nvim-dap.nvim-dap-python.nvim-dap-python-keys").keys,
+
+    config = function ()
+      local python_path = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python"
+      require("dap-python").setup(python_path)
+    end,
+  },
+
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+       dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+       ft = "markdown",
+    ---@module 'render-markdown'
+    opts = {},
+  },
+```
+
+В файл `nvim-dap/nvim-dap-keys.lua` добавить: 
+```lua
+local M = {}
+
+M.keys = {
+    { "<leader>dB", function() require("dap").set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = "Breakpoint Condition" },
+    { "<leader>db", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
+    { "<leader>dc", function() require("dap").continue() end, desc = "Run/Continue" },
+    { "<leader>dC", function() require("dap").run_to_cursor() end, desc = "Run to Cursor" },
+    { "<leader>dg", function() require("dap").goto_() end, desc = "Go to Line (No Execute)" },
+    { "<leader>di", function() require("dap").step_into() end, desc = "Step Into" },
+    { "<leader>dj", function() require("dap").down() end, desc = "Down" },
+    { "<leader>dk", function() require("dap").up() end, desc = "Up" },
+    { "<leader>dl", function() require("dap").run_last() end, desc = "Run Last" },
+    { "<leader>do", function() require("dap").step_out() end, desc = "Step Out" },
+    { "<leader>dO", function() require("dap").step_over() end, desc = "Step Over" },
+    { "<leader>dP", function() require("dap").pause() end, desc = "Pause" },
+    { "<leader>dr", function() require("dap").repl.toggle() end, desc = "Toggle REPL" },
+    { "<leader>ds", function() require("dap").session() end, desc = "Session" },
+    { "<leader>dt", function() require("dap").terminate() end, desc = "Terminate" },
+    { "<leader>dw", function() require("dap.ui.widgets").hover() end, desc = "Widgets" },
+}
+
+return M
+```
+
+В файл `nvim-dap/nvim-dap-python/nvim-dap-python-keys.lua` добавить:  
+```lua
+local M = {}
+
+M.keys = {
+      { "<leader>dPt", function() require('dap-python').test_method() end, desc = "Debug Method", ft = "python" },
+      { "<leader>dPc", function() require('dap-python').test_class() end, desc = "Debug Class", ft = "python" }
+}
+
+return M
+```
+
+В файл `nvim-dap/nvim-dap-ui/nvim-dap-ui-keys` добавить:  
+```lua
+local M = {}
+
+M.keys = {
+    { "<leader>du", function() require("dapui").toggle({ }) end, desc = "Dap UI" },
+    { "<leader>de", function() require("dapui").eval() end, desc = "Eval", mode = {"n", "v"} },
+}
+
+return M
+```
+
+В файл `nvim-dap/nvim-dap-ui/nvim-dap-ui-config` добавить:  
+```lua
+local M = {}
+
+function M.setup(opts)
+    local dap = require("dap")
+
+    dap.adapters.python = {
+        type = 'executable';
+        command = 'python';
+        args = { '-m', 'debugpy.adapter' };
+    }
+
+    dap.configurations.python = {
+        {
+            type = 'python';
+            request = 'launch';
+            name = 'Start Django debugging';
+            program = '/path/to/django/manage.py';
+            args = {'runserver'};
+            console = 'integratedTerminal';
+            justMyCode = true;
+        },
+    }
+
+    local dapui = require("dapui")
+    dapui.setup(opts)
+    dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open({})
+    end
+    dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close({})
+    end
+    dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close({})
+    end
+    vim.fn.sign_define('DapBreakpoint', {text='⬤', texthl='DapBreakpoint', linehl='', numhl=''})
+    vim.cmd('highlight DapBreakpoint guifg=#FF0000 ctermfg=red')
+end
+
+return M
+```
+
+## Часть 4: Отладка
+
+### Как отлаживать Django
+
+Для отладки приложения на Django необходимо в файле `nvim-dap/nvim-dap-ui/nvim-dap-ui-config` прописать путь до файла manage.py приложения:  
+```lua
+dap.configurations.python = {
+    {
+        type = 'python';
+        request = 'launch';
+        name = 'Start Django debugging';
+        program = '/path/to/django/manage.py';
+        args = {'runserver'};
+        console = 'integratedTerminal';
+        justMyCode = true;
+    },
+}
+```
+
+### Как отлаживать Flask
+
+Для отладки приложения на Flask необходимо в файле `nvim-dap/nvim-dap-ui/nvim-dap-ui-config` прописать путь до файла run.py приложения:  
+```lua
+dap.configurations.python = {
+    {
+        type = 'python';
+        request = 'launch';
+        name = 'Start Flask Debugging';
+        program = '/path/to/run.py';
+        args = {''};
+        console = 'integratedTerminal';
+        justMyCode = true;
+    },
+}
+```
+
+### Как отлаживать FastAPI
+
+В конфигурациях для Django и Flask инициализируется переменная program, которая содержит путь до конкретного run.py, который запускает конкретное приложение.
+
+В конфигурации для FastAPI вместо переменной program инициализируется переменная module, где указан uvicorn (ASGI для FastAPI), который запускается из текущего активного виртуального окружения.  
+В аргументах args указывается 'src.main:app', то есть импорт-путь относительно корня проекта модуля main (main.py), который содержит переменную app (app = FastAPI()):  
+```lua
+dap.configurations.python = {
+    {
+        type = 'python',
+        request = 'launch',
+        name = 'Start FastAPI (uvicorn)',
+        module = 'uvicorn',   -- вместо program используем module
+        args = {
+            'src.main:app',
+            '--reload',
+            -- '--port', '8000'
+        },
+        console = 'integratedTerminal',
+        justMyCode = true,
+    }
+}
+```
+
+## Часть 5: Установка и настройка pre-commit pipeline
 
 ## Полезные плагины
 
