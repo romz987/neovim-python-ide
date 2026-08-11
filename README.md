@@ -121,11 +121,31 @@ NvChad поставляется с предустановленным набор
 :TSInstall python lua html css json jsonc bash markdown markdown_inline yaml toml dockerfile
 ```
 
-### Установка и настройка LSP-сервера pyright
+### Установка pyright, ruff и black
 
-### Установка и настройка линтера ruff
+Добавить в `chadrc.lua`:  
+```lua
+M.mason = {
+  pkgs = {
+    ...
+    "pyright",
+    "ruff",
+    "black",
+  }
+ ...
+}
+```
 
-### Установка и настройка форматтера black
+Выполнить:  
+```bash
+:MasonInstallAll
+```
+
+### Настройка pyright
+
+### Настройка ruff
+
+### Настройка black
 
 ## Часть 3: Установка и настройка дебаггера
 
@@ -205,19 +225,60 @@ NvChad поставляется с предустановленным набор
 
 ## Другие полезные плагины
 
-### Интерфейс и уведомления
+### AI-ассистент
+
+`yetone/avante.nvim`
+
+[avante github page](https://github.com/yetone/avante.nvim)
+
+### Навигация и редактирование
+
+`folke/flash.nvim`
+
+Быстрые прыжки по тексту.  
+Улучшенные motions f/t.  
+
+[flash github page](https://github.com/folke/flash.nvim)
+
+`kevinhwang91/nvim-ufo`
+
+Улучшает встроенный folding.  
+
+[neovim ufo github page](https://github.com/kevinhwang91/nvim-ufo)
+
+`mg979/vim-visual-multi`
+
+Полноценное multi-cursor редактирование.  
+Одновременная работа с несколькими курсорами и выделениями.  
+
+[vim-visual-multi github page](https://github.com/mg979/vim-visual-multi)
+
+`hinell/duplicate.nvim`
+
+Удобное дублирование строк и выделенных блоков.  
+
+[duplicate github page](https://github.com/hinell/duplicate.nvim)
+
+`fedepujol/move.nvim`
+
+Перемещение строк и блоков с возможностью сохранения индентации.
+
+[move github page](https://github.com/fedepujol/move.nvim)
+
+### Уведомления и интерфейс
 
 `folke/noice.nvim`
 
 Заменяет стандартный UI для сообщений, командной строки и popup-меню:  
 
+- Отображает уведомления с помощью notify.nvim  
 - Позволяет гибко маршрутизировать сообщения от neovim и отображать их в разных представлениях  
 - Ведёт историю сообщений  
 - Добавляет UI для Command line  
 - Добавляет UI для поиска  
 - Добавляет UI для Hover-документации от LSP  
 - Добавляет UI для LSP signature help  
-- Подсвечивает синтаксис Vim/Lua прямо в Command line  
+- Подсвечивает синтаксис Vim/Lua прямо в Commad line  
 - Отображает длинный вывод команд в обычных буферах/split  
 - Подсвечивает синтаксис Vim/Lua прямо в Command line  
 
@@ -237,87 +298,69 @@ NvChad поставляется с предустановленным набор
 
 [rainbow-delimiters github page](https://github.com/hiphish/rainbow-delimiters.nvim)
 
+`folke/todo-comments.nvim`
 
+Подсвечивает теги комментариев (FIX, TODO, NOTE, PERF, HACK, WARNING).
+Улучшает читаемость кода.
 
+[todo-comments github page](https://github.com/folke/todo-comments.nvim)
 
+`karb94/neoscroll`
 
+Добавляет плавную анимацию прокрутки в Neovim вместо резких скачков при перемещении по файлу.  
 
+[neoscroll github page](https://github.com/karb94/neoscroll.nvim)
 
+`sphamba/smear-cursor.nvim`
 
+Дополнительная анимация для курсора.  
+Позволяет лучше замечать перемещения курсора.  
 
-
-
-
-
-### AI-ассистент
-
-`yetone/avante.nvim`
-
-[avante github page](https://github.com/yetone/avante.nvim)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### Markdown
-
-Рендеринг Markdown прямо в буфере Neovim
+[smear-cursor github page](https://github.com/sphamba/smear-cursor.nvim)
 
 `MeanderingProgrammer/render-markdown.nvim`
 
+Рендеринг Markdown прямо в буфере Neovim.  
+
 [render-markdown github page](https://github.com/MeanderingProgrammer/render-markdown.nvim)
 
-### Git
+### lsp интеграция
+
+`nvimdev/lspsaga.nvim`
+
+Улучшает встроенный LSP-интерфейс Neovim, предоставляя более удобный UI для навигации, диагностики, code actions и работы с символами:
+
+- Показывает диагностику LSP в удобных float-окнах и позволяет быстро переходить между ошибками  
+- Даёт Finder для поиска определений, ссылок и других LSP-символов  
+- Добавляет Peek Definition / Peek Type Definition — просмотр определения прямо во всплывающем окне  
+- Улучшает Hover — отображение документации и информации о символе  
+- Добавляет удобный Rename с предварительным просмотром изменений и поиском/заменой по проекту  
+- Показывает Code Actions в отдельном UI с live preview  
+- Показывает Lightbulb при наличии доступных Code Actions  
+- Добавляет Call Hierarchy — поиск входящих и исходящих вызовов  
+- Показывает реализации интерфейсов и позволяет быстро переходить к ним  
+- Добавляет Outline — дерево символов текущего файла  
+- Добавляет Breadcrumbs — текущий путь по символам в winbar  
+- Улучшает переходы Go to Definition / Type Definition визуальным beacon-индикатором  
+- Добавляет float terminal  
+- Предоставляет единый настраиваемый UI для LSP float-окон, границ, иконок и preview  
+
+[lspsaga github page](https://github.com/nvimdev/lspsaga.nvim)
+
+`folke/trouble.nvim`
+
+Предоставляет единый удобный UI для диагностики и результатов LSP, Quickfix и Location List.  
+Удобно для копирования сообщений lsp и линтера.
+
+[trouble github page](https://github.com/folke/trouble.nvim)
+
+### git интеграция
 
 Git-клиент внутри Neovim
 
 `NeogitOrg/neogit`
 
 [neogit github page](https://github.com/NeogitOrg/neogit)
-
-### Фолдинг
-
-Модный фолдинг
-
-`kevinhwang91/nvim-ufo`
-
-[neovim ufo github page](https://github.com/kevinhwang91/nvim-ufo)
-
-### Скроллинг
-
-Плавный скроллинг
-
-`karb94/neoscroll`
-
-[neoscroll github page](https://github.com/karb94/neoscroll.nvim)
-
-### Курсор
-
-Модный курсор
-
-`sphamba/smear-cursor`
-
-[smear-cursor github page](https://github.com/sphamba/smear-cursor.nvim)
-
 
 ## Список использованных материалов
 
