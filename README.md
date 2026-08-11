@@ -143,9 +143,150 @@ M.mason = {
 
 ### Настройка pyright
 
+Активация lsp-серверов с конфигом описана в [официальной документации NvChad](https://nvchad.com/docs/recipes).  
+
+Cправка nvim-lspconfig:  
+```bash
+:help lspconfig 
+:help lspconfig-all
+```
+
+Добавить в `configs/lspconfig.lua`:  
+```lua
+require("nvchad.configs.lspconfig").defaults()
+
+local servers = {
+  pyright = {
+    settings = {
+      python = {
+        analysis = {
+          -- Pyright сам ищет пути к библиотекам, установленным в виртуальном окружении
+          autoSearchPaths = true,
+          -- Строгость проверки типов: off/basic/strict - отключить / базовая (не требует аннотаций) / строгая (требует аннотаций)
+          typeCheckingMode = "basic",
+          -- Разрешить pyright заглядывать в код библиотек, а не только pyi-стабы - улучшает автодополнение и проверку типов, если стабы отсутствуют или не полны 
+          useLibraryCodeForTypes = true,
+          -- Режим диагностики -- openFilesOnly / workspace - анализируются только открытые файлы / все файлы в проекте 
+          -- Проблемы всех файлов в проекте можно увидеть с помощью :Telescope diagnostics 
+          -- А если включить Ruff и отключить диагностику у pyright совсем (off), то в :Telescope diagnostics можно увидеть диагностику ruff 
+          diagnosticMode = "workspace",
+        },
+      },
+    },
+  },
+}
+
+for name, opts in pairs(servers) do
+  vim.lsp.config(name, opts)
+  vim.lsp.enable(name)
+end
+```
+
+Проверить:   
+```bash
+:LspInfo
+```
+
 ### Настройка ruff
 
+Можно использовать ruff двумя способами:
+
+1. Подключить как lsp-сервер
+
+Добавить в `configs/lspconfig.lua`:  
+```lua
+local servers = {
+  -- ...
+  ruff = {},
+}
+...
+```  
+В этом случае, сообщения от ruff будут выводиться в neovim.
+
+2. Вызывать в командной оболочке
+
+В этом случае, если активно виртуальное окружение, то ruff придётся дополнительно устанавливать в виртуальное окружение (через pip) и вызывать оттуда.
+
+Конфигурация пишется в `pyproject.toml`.  
+
 ### Настройка black
+
+Установить black в качестве форматтера для python-кода в файле `configs/conform.lua`:  
+```lua
+local options = {
+  formatters_by_ft = {
+    lua = { "stylua" },
+    python = { "black" },
+    ...
+  },
+}
+```
+
+Lazy должен загружать плагин `conform.nvim` при открытии любого python-файла.  
+Для этого добавить в `plugins/init.lua`:
+```lua
+{
+    "stevearc/conform.nvim",
+    -- загрузить conform если открываем python файл 
+    ft = "python",
+    -- event = 'BufWritePre', -- uncomment for format on save
+    opts = require "configs.conform",
+},
+```
+
+Можно форматировать код тремя способами:
+
+1. Автоматическое форматирование при сохранении.
+
+В файле `configs/conform.lua` раскомментировать:  
+```lua
+local options = {...},
+
+  format_on_save = {
+    -- These options will be passed to conform.format()
+    timeout_ms = 500,
+    lsp_fallback = true,
+  },
+}
+```
+
+2. Форматирование специальной командой.
+
+Описано в [официальной документации conform.nvim](https://github.com/stevearc/conform.nvim/blob/master/doc/recipes.md#format-command)
+
+Для этого в `configs/conform.lua` добавить:
+```lua
+-- from conform.nvim github page #recipes
+vim.api.nvim_create_user_command("ConformFormat", function(args)
+  local range = nil
+  if args.count ~= -1 then
+    local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
+    range = {
+      start = { args.line1, 0 },
+      ["end"] = { args.line2, end_line:len() },
+    }
+  end
+  require("conform").format({ async = true, lsp_format = "fallback", range = range })
+end, { range = true })
+```
+
+Форматирование будет доступно по команде:  
+```bash
+:ConformFormat
+```
+
+3. Добавить комбинацию клавиш для форматирования
+
+Добавить в `mappings.lua`:  
+```lua
+map("n", "<leader>fb", function()
+  vim.cmd("ConformFormat")
+end, { desc = "Format buffer with conform" })
+```
+
+Комбинация клавиш: `<leader> + fb`
+
+Конфигурация пишется в `pyproject.toml`.  
 
 ## Часть 3: Установка и настройка дебаггера
 
