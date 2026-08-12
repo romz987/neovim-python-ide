@@ -11,12 +11,13 @@
     - [Установка и настройка LSP-сервера pyright](#)
     - [Установка и настройка линтера ruff](#)
     - [Установка и настройка форматтера black](#)
-- [Часть 3: Установка и настройка отладчика](#)
-- [Часть 4: Отладка](#) 
+- [Часть 3: Установка и настройка дополнительных инструментов](#)
+- [Часть 4: Установка и настройка отладчика](#)
+- [Часть 5: Отладка](#) 
     - [Как отлаживать Django](#)
     - [Как отлаживать Flask](#)
     - [Как отлаживать FastAPI](#)
-- [Часть 5: Установка и настройка pre-commit pipeline](#)
+- [Часть 6: Установка и настройка pre-commit pipeline](#)
 - [Полезные плагины](#другие-полезные-плагины)
 - [Список использованных материалов](#список-использованных-материалов)
 
@@ -288,7 +289,86 @@ end, { desc = "Format buffer with conform" })
 
 Конфигурация пишется в `pyproject.toml`.  
 
-## Часть 3: Установка и настройка отладчика
+## Часть 3: Установка и настройка дополнительных инструментов
+
+### Список дополнительных инструментов
+
+`taplo`  
+
+Инструмент для комфортной работы с `*.toml` файлами.  
+Работает как lsp-сервер, предоставляет: автодополнение, диагностику ошибок, навигацию, форматирование, валидацию toml по json schema.  
+
+[taplo github page](github.com/tamasfe/taplo)
+
+`yaml language server`
+
+Инструмент для комфортной работы с `*.yaml` файлами.  
+Работает как lsp-сервер, предоставляет: автодополнение, диагностику ошибок, hover-информацию, навигацию, форматирование, валидацию схем.  
+
+[yaml-language-server github page](https://github.com/redhat-developer/yaml-language-server)
+
+`docker language server`
+
+Инструмент от Docker для работы с Dockerfile и Bake.  
+Работает как lsp-сервер, предоставляет: автодополнение, диагностику ошибок, навигацию, форматирование и hover-информацию.  
+Поддерживает линтинг для Dockerfile.  
+
+[docker-language-server github page](https://github.com/docker/docker-language-server)
+
+`dockerfmt`
+
+Форматтер для Dockerfile.  
+Он автоматически приводит Dockerfile к единому стилю: форматирует директивы, нормализует пробелы и форматирует shell-команды.  
+Умеет преобразовывать устаревший синтаксис ENV.
+
+[dockerfmt github page](https://github.com/reteps/dockerfmt)
+
+### Установка  
+
+Добавить в `chadrc.lua`:  
+```lua
+-- mason
+...
+M.mason = {
+  pkgs = {
+      ...
+    "yaml-language-server",
+    "taplo",
+    "docker-language-server",
+    "dockerfmt",
+  }
+
+```
+
+Добавить в `configs/lspconfig.lua`:
+```lua
+require("nvchad.configs.lspconfig").defaults()
+
+local servers = {
+    ...
+  yamlls = {
+    filetypes = { "yaml", "yaml.docker-compose" },
+  },
+  taplo = {},
+  docker_language_server = {},
+}
+...
+```
+
+Добавить в `configs/conform.lua`:
+```lua
+local options = {
+    ...
+    dockerfile = { "dockerfmt" },
+}
+```
+
+Выполнить:  
+```bash
+:MasonInstallAll
+```
+
+## Часть 4: Установка и настройка отладчика
 
 ### Установка отладчика для python  
 
@@ -469,7 +549,7 @@ end
 return M
 ```
 
-## Часть 4: Отладка
+## Часть 5: Отладка
 
 ### Как отлаживать Django
 
@@ -529,7 +609,46 @@ dap.configurations.python = {
 }
 ```
 
-## Часть 5: Установка и настройка pre-commit pipeline
+## Часть 6: Установка и настройка pre-commit
+
+Pre-commit pipeline это набор автоматических проверок, которые запускаются перед созданием git commit для того, чтобы не дать попасть в репозиторий плохому коду.   
+*Flow: git commit → pre-commit hooks → format/lint/type-check/tests → если всё OK → commit создаётся.*  
+
+Установка (глобально):  
+```bash
+uv tool install pre-commit --with pre-commit-uv
+
+```
+
+Создать файл конфигурации `.pre-commit-config.yaml` (пример конфигурации):  
+```yaml
+repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff
+        entry: ruff check --config pyproject.toml --output-format concise
+        language: system
+        types: [python]
+        pass_filenames: true
+
+      - id: black
+        name: black
+        entry: black --config pyproject.toml --check
+        language: system
+        types: [python]
+        pass_filenames: true
+```
+
+Установить хук pre-commit в git:  
+```bash
+pre-commit install
+```
+
+Если нужно будет сделать commit несмотря на ошибки:  
+```bash
+git commit -m "info" --no-verify
+```
 
 ## Полезные плагины
 
@@ -880,5 +999,4 @@ require "filetypes"
 ```
 
 Перепроверить `filetype?`
-
 
