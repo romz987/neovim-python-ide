@@ -797,7 +797,13 @@ neovim: [neovim github page](https://github.com/neovim/neovim)
 nvchad: [nvchad official website](https://nvchad.com/)  
 nvchad: [nvchad github page](https://github.com/NvChad/NvChad)  
 
-dotfyle - discover neovim plugins: [dotfyle](#https://dotfyle.com/)  
+dotfyle - discover neovim plugins: [dotfyle](https://dotfyle.com/)  
+
+lazy: [lazy plugin manager docs](https://lazy.folke.io/)  
+lazyvim: [lazyvim setup docs](https://www.lazyvim.org/)  
+
+debugging guide: [guide to debugging in neovim](https://tamerlan.dev/a-guide-to-debugging-applications-in-neovim/)   
+lazyvim dap spec: [lazyvim dap core specification](https://www.lazyvim.org/extras/dap/core)
 
 ## Приложение 1: Плагины NvChad по умолчанию
 
