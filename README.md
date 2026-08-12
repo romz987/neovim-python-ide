@@ -812,6 +812,26 @@ DAP (Debug Adapter Protocol) - это спецификация, описываю
 
 ## Tips and tricks
 
+### Подсветка строки с курсором
+
+Раскомментировать в `options.lua`:  
+```lua 
+require "nvchad.options"
+
+local o = vim.o
+
+-- enable cursorline
+o.cursorlineopt ='both'
+```
+
+Цвет подсветки устанавливается в `chadrc.lua`:  
+```lua
+hl_override = {
+    ...
+    CursorLine = { bg = "#343b49" },
+}
+```
+
 ### Корректное определение типов файлов на примере docker-compose
 
 Как распознаётся тип текущего файла:
@@ -840,3 +860,5 @@ require "filetypes"
 ```
 
 Перепроверить `filetype?`
+
+
