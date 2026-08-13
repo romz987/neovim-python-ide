@@ -446,14 +446,6 @@ plugins/
       require("dap-python").setup(python_path)
     end,
   },
-
-  {
-    "MeanderingProgrammer/render-markdown.nvim",
-       dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
-       ft = "markdown",
-    ---@module 'render-markdown'
-    opts = {},
-  },
 ```
 
 В файл `nvim-dap/nvim-dap-keys.lua` добавить: 
