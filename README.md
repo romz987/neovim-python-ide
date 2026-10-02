@@ -141,10 +141,45 @@ NvChad поставляется с предустановленным набор
 
 ### Treesitter
 
-Установка необходимых парсеров:
+#### Для версии neovim 12+
+
+Установить только необходимые парсеры:
 ```bash
-:TSInstall python requirements regex lua luap luau html css json jsonc bash markdown markdown_inline yaml toml dockerfile git_config git_rebase gitattributes gitcommit gitignore 
+TSInstall python requirements regex lua luap luau html css json jsonc bash markdown markdown_inline yaml toml dockerfile git_config git_rebase gitattributes gitcommit gitignore
 ```
+
+Установить все доступные парсеры:
+```bash
+TSInstallAll
+```
+
+#### Для версии neovim 11
+
+Плагин nvim-treesitter перешёл на ветку main по умолчанию. 
+Ветка main - это полный несовместимый рерайт nvim-treesitter, требующий neovim версии 12+ и использующий его новый API.  
+Чтобы обеспечить работу nvim-treesitter с neovim 11 необходимо принудительно переключить ветку nvim-treesitter на master 
+из которой доступна "старая" совместимая версия nvim-treesitter.  
+
+Для этого в файле `plugins/init.lua` нужно прописать следующий конфиг:  
+```lua
+{
+    "nvim-treesitter/nvim-treesitter",
+    branch = "master",
+    lazy = false,
+    build = ":TSUpdate",
+    config = function()
+      require("nvim-treesitter.configs").setup({
+        -- необходимые для установки плагины прописать здесь
+        ensure_installed = { "html", "css", "bash", "python", "requirements", "regex", "lua", "luap", "luau", "json", "jsonc", "markdown", "markdown_inline", "yaml", "toml", "dockerfile", "git_config", "git_rebase", "gitattributes", "gitcommit", "gitignore" },
+        sync_install = true,
+        highlight = { enable = true },
+        indent = { enable = true },
+      })
+    end,
+},
+```
+
+После перезапуска neovim указанные в ensure_installed парсеры будут установлены автоматически.  
 
 ### Установка pyright, ruff и black
 

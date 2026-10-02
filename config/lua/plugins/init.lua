@@ -23,13 +23,30 @@ return {
     end,
   },
 
+  -- [romz987] nvim-treesitter
+  {
+    "nvim-treesitter/nvim-treesitter",
+    branch = "master",
+    lazy = false,
+    build = ":TSUpdate",
+    config = function()
+      require("nvim-treesitter.configs").setup({
+        ensure_installed = { "html", "css", "bash", "python", "requirements", "regex", "lua", "luap", "luau", "json", "jsonc", "markdown", "markdown_inline", "yaml", "toml", "dockerfile", "git_config", "git_rebase", "gitattributes", "gitcommit", "gitignore" },
+        sync_install = true,
+        highlight = { enable = true },
+        indent = { enable = true },
+      })
+    end,
+  },
+
+
   -- [romz987] --- AI Integration  ----------------------------------------------
   -------------------------------------------------------------------------------
 
   -- Avante AI Client
   {
     "yetone/avante.nvim",
-    enabled = true,
+    enabled = false,
     event = "VeryLazy",
     build = vim.fn.has("win32") ~= 0
         and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
