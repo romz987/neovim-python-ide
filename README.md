@@ -282,7 +282,7 @@ local options = {
 }
 ```
 
-Lazy должен загружать плагин `conform.nvim` при открытии любого python-файла.  
+Lazy должен загружать плагин `conform.nvim` при открытии любого файла.  
 Для этого добавить в `plugins/init.lua`:
 ```lua
 {
